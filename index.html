@@ -285,6 +285,7 @@
     background-size:12px 2px;
   }
   .tabpanel:focus-visible{outline:2px solid var(--chalk);outline-offset:6px;border-radius:6px}
+  @media (max-width:520px){ .tab{font-size:1.04rem;padding:8px 10px 11px} }
   @media (prefers-reduced-motion: reduce){ .tab{transition:none} }
 
   /* ---- table ---- */
@@ -400,6 +401,7 @@
       <div class="tabs" role="tablist" aria-label="진행 계획과 재단 치수">
         <button class="tab" id="tab-plan" role="tab" aria-controls="panel-plan" aria-selected="true">진행 계획</button>
         <button class="tab" id="tab-calc" role="tab" aria-controls="panel-calc" aria-selected="false" tabindex="-1">재단 치수</button>
+        <button class="tab" id="tab-terms" role="tab" aria-controls="panel-terms" aria-selected="false" tabindex="-1">용어</button>
       </div>
 
       <div class="tabpanel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" tabindex="0">
@@ -462,14 +464,10 @@
 
       </div>
       </div>
-    </section>
 
-    <section id="terms">
-      <div class="sec-head">
-        <span class="label">용어</span>
-        <h2>모르면 막히는 말</h2>
-      </div>
+      <div class="tabpanel" id="panel-terms" role="tabpanel" aria-labelledby="tab-terms" tabindex="0" hidden>
       <div class="panel">
+        <p class="label" style="margin-bottom:12px">모르면 막히는 말</p>
         <dl class="gloss">
           <div><dt>시접<small>seam allowance</small></dt><dd>박음선 바깥으로 남기는 여유분입니다. 재단 치수는 항상 완성 치수에 시접을 더한 값입니다.</dd></div>
           <div><dt>되돌아박기<small>backstitch</small></dt><dd>시작과 끝에서 3~4땀 되돌아 박아 실을 고정합니다. 안 하면 풀립니다.</dd></div>
@@ -484,6 +482,7 @@
           <div><dt>마<small>yard</small></dt><dd>원단 길이 단위입니다. <span class="mono">1마 ≈ 91cm</span>, 3마면 약 <span class="mono">274cm</span>입니다. 폭은 보통 110cm 또는 150cm입니다.</dd></div>
           <div><dt>볼포인트 바늘</dt><dd>끝이 둥근 니트용 바늘입니다. 일반 바늘로 니트를 박으면 올이 터집니다.</dd></div>
         </dl>
+      </div>
       </div>
     </section>
 
