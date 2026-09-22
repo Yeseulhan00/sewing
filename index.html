@@ -266,6 +266,27 @@
   .stage .bar .seam{flex:1}
   .stage .bar .v{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}
 
+  /* ---- tabs ---- */
+  .tabs{
+    display:flex;gap:3px;flex-wrap:wrap;
+    border-bottom:1px dashed var(--rule-2);margin-bottom:18px;
+  }
+  .tab{
+    appearance:none;-webkit-appearance:none;background:none;border:0;
+    font-family:var(--f-display);font-weight:700;font-size:1.22rem;line-height:1.25;
+    color:var(--muted);padding:8px 14px 12px;border-radius:6px 6px 0 0;
+    cursor:pointer;position:relative;transition:color .15s ease;
+  }
+  .tab:hover{color:var(--ink-2);background:var(--surface-2)}
+  .tab[aria-selected="true"]{color:var(--ink)}
+  .tab[aria-selected="true"]::after{
+    content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;
+    background:repeating-linear-gradient(90deg,var(--thread) 0 6px,transparent 6px 12px);
+    background-size:12px 2px;
+  }
+  .tabpanel:focus-visible{outline:2px solid var(--chalk);outline-offset:6px;border-radius:6px}
+  @media (prefers-reduced-motion: reduce){ .tab{transition:none} }
+
   /* ---- table ---- */
   .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--surface)}
   table{border-collapse:collapse;width:100%;min-width:400px;font-size:.88rem}
@@ -375,11 +396,13 @@
       <div id="stage-list"></div>
     </section>
 
-    <section id="plan">
-      <div class="sec-head">
-        <span class="label">일정</span>
-        <h2>진행 계획</h2>
+    <section id="tools">
+      <div class="tabs" role="tablist" aria-label="진행 계획과 재단 치수">
+        <button class="tab" id="tab-plan" role="tab" aria-controls="panel-plan" aria-selected="true">진행 계획</button>
+        <button class="tab" id="tab-calc" role="tab" aria-controls="panel-calc" aria-selected="false" tabindex="-1">재단 치수</button>
       </div>
+
+      <div class="tabpanel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" tabindex="0">
       <div class="tablewrap">
         <table>
           <thead><tr><th>단계</th><th>기간</th><th>핵심 기술</th></tr></thead>
@@ -389,13 +412,9 @@
       <p class="tip" style="margin-top:14px;padding-left:13px;border-left:2px solid var(--chalk);font-size:.9rem;color:var(--ink-2)">
         가장 막히는 구간은 2단계에서 3단계로 넘어갈 때가 아니라 <b>3단계에서 4단계로 갈 때</b>입니다. 여기서 지퍼라는 부자재가 처음 들어오고, 천을 뒤집는 입체적 사고가 필요해집니다.
       </p>
-    </section>
-
-    <section id="calc">
-      <div class="sec-head">
-        <span class="label">계산</span>
-        <h2>재단 치수</h2>
       </div>
+
+      <div class="tabpanel" id="panel-calc" role="tabpanel" aria-labelledby="tab-calc" tabindex="0" hidden>
       <div class="calcs">
 
         <div class="calc">
@@ -441,6 +460,7 @@
           <p class="out" id="c4out"></p>
         </div>
 
+      </div>
       </div>
     </section>
 
@@ -746,6 +766,42 @@
   loadLocal();
   syncBoxes();
   refresh();
+
+  /* ---------- tabs ---------- */
+  var tabs = [].slice.call(document.querySelectorAll('[role="tab"]'));
+  var TAB_LS = "sewing-tab-v1";
+
+  function showTab(tab, focus){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+    if(focus) tab.focus();
+    try{ localStorage.setItem(TAB_LS, tab.id); }catch(e){}
+  }
+
+  tabs.forEach(function(tab, i){
+    tab.addEventListener("click", function(){ showTab(tab, false); });
+    tab.addEventListener("keydown", function(ev){
+      var k = ev.key, next = null;
+      if(k === "ArrowRight" || k === "ArrowDown") next = tabs[(i+1) % tabs.length];
+      else if(k === "ArrowLeft" || k === "ArrowUp") next = tabs[(i-1+tabs.length) % tabs.length];
+      else if(k === "Home") next = tabs[0];
+      else if(k === "End") next = tabs[tabs.length-1];
+      if(next){ ev.preventDefault(); showTab(next, true); }
+    });
+  });
+
+  try{
+    var savedTab = localStorage.getItem(TAB_LS);
+    if(savedTab){
+      var match = null;
+      tabs.forEach(function(t){ if(t.id === savedTab) match = t; });
+      if(match) showTab(match, false);
+    }
+  }catch(e){}
 
   /* ---------- calculators ---------- */
   function num(id){ var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
