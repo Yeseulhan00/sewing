@@ -56,6 +56,7 @@
     --chalk-soft:#DCE7F2;
     --grid:rgba(46,125,91,.10);
     --shadow:0 1px 2px rgba(27,33,28,.05);
+    --shadow-pop:0 10px 28px rgba(27,33,28,.14);
 
     --f-display:"Gowun Batang",Georgia,"Nanum Myeongjo",serif;
     --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -77,6 +78,7 @@
       --chalk-soft:#1B2836;
       --grid:rgba(95,191,143,.09);
       --shadow:0 1px 2px rgba(0,0,0,.3);
+      --shadow-pop:0 10px 28px rgba(0,0,0,.5);
     }
   }
   :root[data-theme="dark"]{
@@ -94,6 +96,7 @@
     --chalk-soft:#1B2836;
     --grid:rgba(95,191,143,.09);
     --shadow:0 1px 2px rgba(0,0,0,.3);
+    --shadow-pop:0 10px 28px rgba(0,0,0,.5);
   }
 
   *{box-sizing:border-box}
@@ -132,6 +135,36 @@
   .topbar .name{font-family:var(--f-display);font-weight:700;font-size:.98rem;white-space:nowrap}
   .topbar .seam{flex:1;min-width:60px}
   .topbar .pct{font-family:var(--f-mono);font-size:.82rem;color:var(--thread);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  /* ---- menu ---- */
+  .menu-wrap{position:relative;flex:0 0 auto}
+  .menu-btn{
+    appearance:none;-webkit-appearance:none;display:grid;place-content:center;
+    background:none;border:1px solid var(--rule);border-radius:6px;
+    color:var(--ink-2);padding:7px 8px;line-height:0;cursor:pointer;
+    transition:background .15s ease,color .15s ease;
+  }
+  .menu-btn:hover{background:var(--surface-2);color:var(--ink)}
+  .menu-btn[aria-expanded="true"]{background:var(--surface-2);color:var(--ink);border-color:var(--rule-2)}
+  @media (prefers-reduced-motion: reduce){ .menu-btn{transition:none} }
+
+  .menu{
+    position:absolute;top:calc(100% + 9px);left:0;z-index:30;min-width:13.5rem;
+    background:var(--surface);border:1px solid var(--rule);border-radius:9px;
+    box-shadow:var(--shadow-pop);padding:6px;
+    display:flex;flex-direction:column;gap:1px;
+  }
+  .menu a{
+    display:block;padding:8px 11px;border-radius:6px;text-decoration:none;
+    color:var(--ink-2);font-size:.9rem;white-space:nowrap;
+  }
+  .menu a:hover{background:var(--surface-2);color:var(--ink)}
+  .menu-label{
+    margin:7px 5px 3px;padding-top:8px;border-top:1px dashed var(--rule);
+    font-family:var(--f-mono);font-size:.64rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  @media (max-width:460px){ .topbar .name{display:none} }
 
   /* ---- stitched progress ---- */
   .seam{
@@ -358,6 +391,23 @@
 
 <div class="topbar">
   <div class="topbar-in">
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="메뉴 열기">
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3">
+            <path d="M1 1h16"/><path d="M1 7h16"/><path d="M1 13h16"/>
+          </g>
+        </svg>
+      </button>
+      <nav class="menu" id="menu" aria-label="바로가기" hidden>
+        <a href="#supplies">사야 할 것</a>
+        <a href="#stages">0단계에서 5단계까지</a>
+        <p class="menu-label">참고</p>
+        <a href="#tools" data-tab="tab-plan">진행 계획</a>
+        <a href="#tools" data-tab="tab-calc">재단 치수</a>
+        <a href="#tools" data-tab="tab-terms">용어</a>
+      </nav>
+    </div>
     <span class="name">손수건에서 자켓까지</span>
     <span class="seam" aria-hidden="true"><i id="bar-all" style="width:0%"></i></span>
     <span class="pct mono" id="pct-all">0%</span>
@@ -821,6 +871,45 @@
       if(match) showTab(match, false);
     }
   }catch(e){}
+
+  /* ---------- 메뉴 ---------- */
+  var menuBtn = document.getElementById("menu-btn");
+  var menu = document.getElementById("menu");
+  var menuLinks = [].slice.call(menu.querySelectorAll("a"));
+
+  function setMenu(open){
+    menu.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    menuBtn.setAttribute("aria-label", open ? "메뉴 닫기" : "메뉴 열기");
+  }
+
+  menuBtn.addEventListener("click", function(ev){
+    ev.stopPropagation();
+    var opening = menu.hidden;
+    setMenu(opening);
+    if(opening) menuLinks[0].focus();
+  });
+
+  menuLinks.forEach(function(link, i){
+    link.addEventListener("click", function(){
+      var target = link.getAttribute("data-tab");
+      if(target) showTab(document.getElementById(target), false);
+      setMenu(false);
+    });
+    link.addEventListener("keydown", function(ev){
+      var next = null;
+      if(ev.key === "ArrowDown") next = menuLinks[(i+1) % menuLinks.length];
+      else if(ev.key === "ArrowUp") next = menuLinks[(i-1+menuLinks.length) % menuLinks.length];
+      if(next){ ev.preventDefault(); next.focus(); }
+    });
+  });
+
+  document.addEventListener("click", function(ev){
+    if(!menu.hidden && !menu.contains(ev.target) && !menuBtn.contains(ev.target)) setMenu(false);
+  });
+  document.addEventListener("keydown", function(ev){
+    if(ev.key === "Escape" && !menu.hidden){ setMenu(false); menuBtn.focus(); }
+  });
 
   /* ---------- calculators ---------- */
   function num(id){ var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
