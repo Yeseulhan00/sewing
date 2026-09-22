@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>손수건에서 자켓까지</title>
+<meta name="description" content="미싱을 막 들인 사람이 0단계 실 끼우기부터 5단계 안감 자켓까지 6개월간 따라가는 독학 체크리스트.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="손수건에서 자켓까지">
+<meta property="og:description" content="미싱 독학 6개월 커리큘럼 — 실 끼우기부터 안감 넣은 자켓까지, 단계별 체크리스트와 재단 치수 계산기.">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+  html{color-scheme:light dark}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<style>
+  :root{
+    --paper:#F3F5F0;
+    --surface:#FFFFFF;
+    --surface-2:#EBEEE7;
+    --ink:#1B211C;
+    --ink-2:#464F47;
+    --muted:#6E776E;
+    --rule:#D2D8CE;
+    --rule-2:#BCC4B8;
+    --thread:#2E7D5B;
+    --thread-soft:#DFEDE4;
+    --chalk:#2F6090;
+    --chalk-soft:#DCE7F2;
+    --grid:rgba(46,125,91,.10);
+    --shadow:0 1px 2px rgba(27,33,28,.05);
+
+    --f-display:"Gowun Batang",Georgia,"Nanum Myeongjo",serif;
+    --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131714;
+      --surface:#1A1F1B;
+      --surface-2:#222922;
+      --ink:#E7EBE4;
+      --ink-2:#BAC3B8;
+      --muted:#8E988D;
+      --rule:#2E362E;
+      --rule-2:#3D473C;
+      --thread:#5FBF8F;
+      --thread-soft:#1D3227;
+      --chalk:#84B4E6;
+      --chalk-soft:#1B2836;
+      --grid:rgba(95,191,143,.09);
+      --shadow:0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131714;
+    --surface:#1A1F1B;
+    --surface-2:#222922;
+    --ink:#E7EBE4;
+    --ink-2:#BAC3B8;
+    --muted:#8E988D;
+    --rule:#2E362E;
+    --rule-2:#3D473C;
+    --thread:#5FBF8F;
+    --thread-soft:#1D3227;
+    --chalk:#84B4E6;
+    --chalk-soft:#1B2836;
+    --grid:rgba(95,191,143,.09);
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:15px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--f-display);font-weight:700;text-wrap:balance;margin:0;line-height:1.25}
+  p{margin:0}
+  ul,ol{margin:0;padding:0;list-style:none}
+  a{color:var(--thread)}
+  :focus-visible{outline:2px solid var(--chalk);outline-offset:2px;border-radius:3px}
+
+  .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  .label{
+    font-family:var(--f-mono);font-size:.68rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);
+  }
+
+  /* ---- top bar ---- */
+  .topbar{
+    position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--rule);
+  }
+  .topbar-in{
+    max-width:1180px;margin:0 auto;padding:10px 20px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .topbar .name{font-family:var(--f-display);font-weight:700;font-size:.98rem;white-space:nowrap}
+  .topbar .seam{flex:1;min-width:60px}
+  .topbar .pct{font-family:var(--f-mono);font-size:.82rem;color:var(--thread);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  /* ---- stitched progress ---- */
+  .seam{
+    height:9px;border-radius:99px;overflow:hidden;
+    background:repeating-linear-gradient(90deg,var(--rule-2) 0 6px,transparent 6px 12px);
+    background-position:center;background-size:12px 2px;background-repeat:repeat-x;
+    display:flex;align-items:center;
+  }
+  .seam > i{
+    display:block;height:2px;border-radius:99px;
+    background:repeating-linear-gradient(90deg,var(--thread) 0 6px,transparent 6px 12px);
+    background-size:12px 2px;
+    transition:width .35s ease;
+  }
+  @media (prefers-reduced-motion: reduce){ .seam > i{transition:none} }
+
+  /* ---- layout ---- */
+  .wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 72px}
+  .rail{display:none}
+  main{max-width:64ch}
+  @media (min-width:1040px){
+    .wrap{display:grid;grid-template-columns:200px minmax(0,1fr);gap:56px;align-items:start}
+    .rail{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 68px);padding-top:40px}
+    main{padding-top:0}
+  }
+
+  .rail ol{display:flex;flex-direction:column;gap:2px}
+  .rail a{
+    display:grid;grid-template-columns:1.6rem 1fr auto;gap:8px;align-items:baseline;
+    padding:6px 8px;border-radius:5px;text-decoration:none;color:var(--ink-2);font-size:.86rem;
+  }
+  .rail a:hover{background:var(--surface-2)}
+  .rail a .n{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+  .rail a .v{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+  .rail a[data-now="1"]{background:var(--chalk-soft);color:var(--ink)}
+  .rail a[data-now="1"] .n{color:var(--chalk)}
+  .rail a[data-done="1"] .v{color:var(--thread)}
+  .rail-note{margin-top:16px;padding-top:14px;border-top:1px dashed var(--rule-2);font-size:.78rem;color:var(--muted);line-height:1.55}
+
+  /* ---- hero ---- */
+  .hero{padding-block:44px 30px;position:relative}
+  .hero::before{
+    content:"";position:absolute;inset:18px -14px 12px -14px;z-index:-1;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:22px 22px;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,transparent 88%);
+    mask-image:linear-gradient(to bottom,#000 0%,transparent 88%);
+  }
+  .hero h1{font-size:clamp(2.1rem,7vw,3.2rem);letter-spacing:-.01em}
+  .hero .sub{margin-top:14px;color:var(--ink-2);max-width:46ch}
+  .hero .meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px 18px}
+  .hero .meta span{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);letter-spacing:.02em}
+
+  /* ---- panels ---- */
+  section{margin-top:44px;scroll-margin-top:calc(env(safe-area-inset-top,0px) + 76px)}
+  .sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .sec-head h2{font-size:1.3rem}
+  .sec-head .label{flex:0 0 auto}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--rule);border-radius:9px;
+    padding:20px;box-shadow:var(--shadow);
+  }
+  .panel + .panel{margin-top:12px}
+
+  /* now panel */
+  .now{
+    border:1px solid var(--rule);border-left:3px solid var(--chalk);
+    background:var(--surface);border-radius:9px;padding:20px 22px;box-shadow:var(--shadow);
+  }
+  .now .who{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .now .chip{
+    font-family:var(--f-mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--chalk-soft);color:var(--chalk);padding:3px 8px;border-radius:99px;
+  }
+  .now h2{font-size:1.24rem;margin-top:8px}
+  .now .next{margin-top:12px;color:var(--ink-2);font-size:.92rem}
+  .now .next b{font-weight:600;color:var(--ink)}
+  .now ol.todo{margin-top:16px;padding-top:14px;border-top:1px dashed var(--rule-2);display:flex;flex-direction:column;gap:7px;counter-reset:t}
+  .now ol.todo li{
+    counter-increment:t;display:grid;grid-template-columns:1.5rem 1fr;gap:8px;
+    font-size:.92rem;color:var(--ink-2);
+  }
+  .now ol.todo li::before{
+    content:counter(t,decimal-leading-zero);font-family:var(--f-mono);font-size:.74rem;color:var(--chalk);
+  }
+
+  /* ---- checklists ---- */
+  .check{display:flex;gap:11px;align-items:flex-start;padding:7px 0}
+  .check + .check{border-top:1px dashed var(--rule)}
+  .check input{
+    appearance:none;-webkit-appearance:none;margin:0;flex:0 0 auto;
+    width:17px;height:17px;margin-top:3px;border-radius:3px;
+    border:1.5px dashed var(--rule-2);background:transparent;cursor:pointer;
+    display:grid;place-content:center;transition:background .15s ease,border-color .15s ease;
+  }
+  .check input:hover{border-color:var(--thread)}
+  .check input:checked{background:var(--thread);border-style:solid;border-color:var(--thread)}
+  .check input:checked::after{
+    content:"";width:9px;height:5px;border-left:2px solid var(--surface);border-bottom:2px solid var(--surface);
+    transform:rotate(-45deg) translate(1px,-1px);
+  }
+  @media (prefers-reduced-motion: reduce){ .check input{transition:none} }
+  .check label{cursor:pointer;flex:1;min-width:0}
+  .check .t{display:block}
+  .check .spec{display:block;font-family:var(--f-mono);font-size:.76rem;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .check input:checked ~ label .t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--rule-2)}
+
+  /* ---- stage cards ---- */
+  .stage{
+    position:relative;background:var(--surface);border:1px solid var(--rule);
+    border-radius:10px;padding:22px 24px;box-shadow:var(--shadow);
+  }
+  .stage::after{
+    content:"";position:absolute;inset:6px;border:1px dashed var(--rule);border-radius:6px;pointer-events:none;
+  }
+  .stage > *{position:relative}
+  .stage + .stage{margin-top:14px}
+  .stage[data-now="1"]{border-color:var(--chalk)}
+  .stage[data-done="1"]::after{border-color:var(--thread-soft)}
+
+  .stage-head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+  .stage-head .n{
+    font-family:var(--f-mono);font-size:1.5rem;font-weight:500;color:var(--rule-2);
+    line-height:1;letter-spacing:-.02em;
+  }
+  .stage[data-now="1"] .stage-head .n{color:var(--chalk)}
+  .stage[data-done="1"] .stage-head .n{color:var(--thread)}
+  .stage-head h3{font-size:1.2rem;flex:1;min-width:8rem}
+  .stage-head .wk{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+
+  .stage .lede{margin-top:10px;color:var(--ink-2);font-size:.93rem}
+  .stage .learn{
+    margin-top:14px;padding:11px 13px;border-radius:6px;background:var(--surface-2);
+    font-size:.88rem;color:var(--ink-2);
+  }
+  .stage .learn b{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px}
+  .stage ul.items{margin-top:14px}
+  .stage .tip{
+    margin-top:14px;padding-left:13px;border-left:2px solid var(--rule-2);
+    font-size:.88rem;color:var(--ink-2);
+  }
+  .stage .pass{
+    margin-top:16px;padding-top:13px;border-top:1px dashed var(--rule-2);
+    display:flex;gap:9px;align-items:baseline;font-size:.88rem;
+  }
+  .stage .pass em{
+    font-style:normal;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--thread);flex:0 0 auto;
+  }
+  .stage .bar{display:flex;align-items:center;gap:10px;margin-top:16px}
+  .stage .bar .seam{flex:1}
+  .stage .bar .v{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  /* ---- table ---- */
+  .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:400px;font-size:.88rem}
+  th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--rule)}
+  tr:last-child td{border-bottom:none}
+  th{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  td.n{font-family:var(--f-mono);color:var(--thread);width:3rem}
+  td.d{font-family:var(--f-mono);color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  /* ---- calculators ---- */
+  .calcs{display:grid;gap:12px}
+  @media (min-width:680px){ .calcs{grid-template-columns:1fr 1fr} }
+  .calc{background:var(--surface);border:1px solid var(--rule);border-radius:9px;padding:17px 18px;box-shadow:var(--shadow)}
+  .calc h3{font-size:1rem;font-family:var(--f-body);font-weight:600}
+  .calc .why{margin-top:5px;font-size:.8rem;color:var(--muted);line-height:1.5}
+  .calc .fields{margin-top:13px;display:flex;flex-wrap:wrap;gap:9px}
+  .calc .f{display:flex;flex-direction:column;gap:3px;min-width:5.2rem;flex:1}
+  .calc .f span{font-size:.72rem;color:var(--muted)}
+  .calc input{
+    font-family:var(--f-mono);font-size:.9rem;font-variant-numeric:tabular-nums;
+    width:100%;padding:6px 8px;border:1px solid var(--rule-2);border-radius:5px;
+    background:var(--paper);color:var(--ink);
+  }
+  .calc .out{
+    margin-top:13px;padding-top:11px;border-top:1px dashed var(--rule-2);
+    font-family:var(--f-mono);font-size:.88rem;color:var(--thread);font-variant-numeric:tabular-nums;line-height:1.6;
+  }
+  .calc .out small{display:block;font-family:var(--f-body);font-size:.76rem;color:var(--muted);margin-top:4px}
+
+  /* ---- glossary ---- */
+  .gloss{display:grid;gap:0}
+  .gloss div{
+    display:grid;grid-template-columns:7.5rem 1fr;gap:14px;padding:9px 0;
+    border-bottom:1px dashed var(--rule);font-size:.89rem;
+  }
+  .gloss div:last-child{border-bottom:none}
+  .gloss dt{font-weight:600;margin:0}
+  .gloss dt small{display:block;font-family:var(--f-mono);font-size:.68rem;color:var(--muted);font-weight:400}
+  .gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ .gloss div{grid-template-columns:1fr;gap:2px} }
+
+  .sync{margin-top:34px;font-size:.76rem;color:var(--muted);display:flex;align-items:center;gap:7px}
+  .sync i{width:6px;height:6px;border-radius:99px;background:var(--rule-2);flex:0 0 auto}
+  .sync[data-live="1"] i{background:var(--thread)}
+
+  footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--muted)}
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <span class="name">손수건에서 자켓까지</span>
+    <span class="seam" aria-hidden="true"><i id="bar-all" style="width:0%"></i></span>
+    <span class="pct mono" id="pct-all">0%</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="rail" aria-label="단계">
+    <p class="label" style="padding-left:8px">단계</p>
+    <ol id="rail-list"></ol>
+    <p class="rail-note">한 단계당 2~3주. 각 단계에서 같은 걸 최소 2개씩 만들 것 — 첫 개는 배우는 것이고 두 번째가 실력이 된다.</p>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>손수건에서<br>자켓까지</h1>
+      <p class="sub">미싱을 막 들인 사람이 실 끼우기부터 안감 넣은 자켓까지 순서대로 올라가는 6개월짜리 독학 과정. 체크한 것은 저장된다.</p>
+      <div class="meta">
+        <span>6단계</span><span>약 6개월</span><span>작업물 28개</span>
+      </div>
+    </header>
+
+    <section id="now" aria-label="지금">
+      <div class="now">
+        <div class="who">
+          <span class="chip">지금</span>
+          <span class="label" id="now-week"></span>
+        </div>
+        <h2 id="now-title">—</h2>
+        <p class="next" id="now-next"></p>
+        <ol class="todo">
+          <li>옥스포드 20수 3마 주문</li>
+          <li>도착하면 40~60도 온수 세탁 후 다림질</li>
+          <li>손수건 한 장으로 1단계 시작</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="supplies">
+      <div class="sec-head">
+        <span class="label">준비물</span>
+        <h2>사야 할 것</h2>
+      </div>
+      <div class="panel">
+        <ul class="items" id="supply-list"></ul>
+        <p class="tip" style="margin-top:16px;padding-left:13px;border-left:2px solid var(--rule-2);font-size:.88rem;color:var(--ink-2)">
+          원단은 재단 전에 40~60도 온수로 세탁하고 다림질할 것. 면은 첫 세탁에서 3~5% 줄어든다.
+        </p>
+      </div>
+    </section>
+
+    <section id="stages">
+      <div class="sec-head">
+        <span class="label">과정</span>
+        <h2>0단계에서 5단계까지</h2>
+      </div>
+      <div id="stage-list"></div>
+    </section>
+
+    <section id="plan">
+      <div class="sec-head">
+        <span class="label">일정</span>
+        <h2>진행 계획</h2>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>단계</th><th>기간</th><th>핵심 기술</th></tr></thead>
+          <tbody id="plan-rows"></tbody>
+        </table>
+      </div>
+      <p class="tip" style="margin-top:14px;padding-left:13px;border-left:2px solid var(--chalk);font-size:.9rem;color:var(--ink-2)">
+        가장 막히는 구간은 2단계에서 3단계로 넘어갈 때가 아니라 <b>3단계에서 4단계로 갈 때</b>. 여기서 지퍼라는 부자재가 처음 들어오고, 천을 뒤집는 입체적 사고가 필요해진다.
+      </p>
+    </section>
+
+    <section id="calc">
+      <div class="sec-head">
+        <span class="label">계산</span>
+        <h2>재단 치수</h2>
+      </div>
+      <div class="calcs">
+
+        <div class="calc">
+          <h3>삼겹접기 재단</h3>
+          <p class="why">한 변마다 접는 폭을 두 번 먹는다. 손수건·냅킨·테이블러너 공통.</p>
+          <div class="fields">
+            <label class="f"><span>완성 한 변 cm</span><input id="c1a" type="number" value="30" min="1" step="0.5"></label>
+            <label class="f"><span>접는 폭 cm</span><input id="c1b" type="number" value="1" min="0.3" step="0.1"></label>
+          </div>
+          <p class="out" id="c1out"></p>
+        </div>
+
+        <div class="calc">
+          <h3>식탁보</h3>
+          <p class="why">테이블 크기 + 늘어뜨림 양쪽 + 시접 5cm. 늘어뜨림은 20~30cm.</p>
+          <div class="fields">
+            <label class="f"><span>테이블 가로</span><input id="c2a" type="number" value="120" min="10" step="1"></label>
+            <label class="f"><span>세로</span><input id="c2b" type="number" value="80" min="10" step="1"></label>
+            <label class="f"><span>늘어뜨림</span><input id="c2c" type="number" value="25" min="0" step="1"></label>
+          </div>
+          <p class="out" id="c2out"></p>
+        </div>
+
+        <div class="calc">
+          <h3>봉투형 쿠션커버</h3>
+          <p class="why">커버는 쿠션보다 작아야 모서리가 빵빵하게 찬다. 뒷면은 두 장이 겹친다.</p>
+          <div class="fields">
+            <label class="f"><span>쿠션 한 변</span><input id="c3a" type="number" value="45" min="10" step="0.5"></label>
+            <label class="f"><span>작게 잡을 값</span><input id="c3b" type="number" value="1.5" min="0" step="0.5"></label>
+            <label class="f"><span>시접</span><input id="c3c" type="number" value="1" min="0.5" step="0.5"></label>
+          </div>
+          <p class="out" id="c3out"></p>
+        </div>
+
+        <div class="calc">
+          <h3>바이어스 바인딩</h3>
+          <p class="why">흔한 천테이프는 폭 3cm. 띠를 당기면서 박으면 가장자리가 물결친다.</p>
+          <div class="fields">
+            <label class="f"><span>본체 가로</span><input id="c4a" type="number" value="40" min="5" step="1"></label>
+            <label class="f"><span>세로</span><input id="c4b" type="number" value="40" min="5" step="1"></label>
+            <label class="f"><span>띠 폭 cm</span><input id="c4c" type="number" value="3" min="1" step="0.5"></label>
+          </div>
+          <p class="out" id="c4out"></p>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="terms">
+      <div class="sec-head">
+        <span class="label">용어</span>
+        <h2>모르면 막히는 말</h2>
+      </div>
+      <div class="panel">
+        <dl class="gloss">
+          <div><dt>시접<small>seam allowance</small></dt><dd>박음선 바깥으로 남기는 여유분. 재단 치수는 항상 완성 치수 + 시접이다.</dd></div>
+          <div><dt>되돌아박기<small>backstitch</small></dt><dd>시작과 끝에서 3~4땀 되돌아 박아 실을 고정하는 것. 안 하면 풀린다.</dd></div>
+          <div><dt>삼겹접기<small>double fold hem</small></dt><dd>가장자리를 두 번 접어 시접을 안으로 완전히 숨기는 마감.</dd></div>
+          <div><dt>마이터<small>miter</small></dt><dd>모서리를 45도로 접어 겹을 줄이는 법. 모서리가 두꺼워지지 않는다.</dd></div>
+          <div><dt>노루발<small>presser foot</small></dt><dd>천을 눌러 보내는 부품. 지퍼·바인딩은 전용 노루발로 갈아 끼운다.</dd></div>
+          <div><dt>통돌이</dt><dd>겉감과 안감을 마주 박고 남긴 구멍으로 뒤집어 안감을 넣는 방법.</dd></div>
+          <div><dt>가봉<small>toile</small></dt><dd>본 원단을 자르기 전 광목으로 만들어 보는 시제품. 어깨선과 진동 깊이는 여기서만 보인다.</dd></div>
+          <div><dt>접착심지</dt><dd>다림질로 붙여 형태를 잡아주는 보강재. 가방 입구, 단추 자리에 쓴다.</dd></div>
+          <div><dt>수<small>番手 / count</small></dt><dd>원단과 실의 굵기. 숫자가 작을수록 두껍다. 옥스포드 20수는 도톰, 재봉실 40수는 범용.</dd></div>
+          <div><dt>호<small>needle size</small></dt><dd>바늘 굵기. 숫자가 클수록 굵다. 11호는 면·옥스포드 같은 보통 두께용.</dd></div>
+          <div><dt>마<small>yard</small></dt><dd>원단 길이 단위. <span class="mono">1마 ≈ 91cm</span>, 3마면 약 <span class="mono">274cm</span>. 폭은 보통 110cm 또는 150cm.</dd></div>
+          <div><dt>볼포인트 바늘</dt><dd>끝이 둥근 니트용 바늘. 일반 바늘로 니트를 박으면 올이 터진다.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <p class="sync" id="sync"><i></i><span>진행 상황을 불러오는 중…</span></p>
+
+    <footer>
+      단계마다 같은 걸 두 개씩. 첫 개는 배우는 것이고, 두 번째가 실력이 된다.
+    </footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STAGES = [
+    {
+      id:"s0", n:"0", name:"기계와 친해지기", weeks:"1주", skill:"실 끼우기, 직선박기",
+      lede:"원단이 도착하기 전까지 자투리 천으로 계속할 수 있는 단계.",
+      items:[
+        {t:"밑실(북알) 감기"},
+        {t:"윗실·밑실 끼우기를 설명서 없이"},
+        {t:"되돌아박기로 시작·끝 고정"},
+        {t:"실장력 조절해 보기"},
+        {t:"종이에 선 따라 박기", spec:"실 없이"},
+        {t:"자투리 천에 직선", spec:"20cm"},
+        {t:"지그재그, 곡선 박아보기"},
+        {t:"바늘 교체"}
+      ],
+      pass:"실 끼우기를 3분 안에, 20cm 직선을 시접 폭 흔들림 없이"
+    },
+    {
+      id:"s1", n:"1", name:"삼겹접기", weeks:"2~3주", skill:"삼겹접기, 마이터",
+      learn:"5mm·1cm 두 번 접어 다리기, 모서리 45도 접기(마이터). 다림질이 작업의 절반이라는 걸 체감하는 단계.",
+      items:[
+        {t:"손수건", spec:"34×34cm 재단 · 완성 30cm"},
+        {t:"냅킨 4장", spec:"45×45cm 재단 · 완성 40cm"},
+        {t:"테이블러너"},
+        {t:"식탁보", spec:"테이블 + 늘어뜨림 20~30cm×2 + 시접 5cm"}
+      ],
+      pass:"냅킨 4장의 크기가 서로 같을 것"
+    },
+    {
+      id:"s2", n:"2", name:"이어 붙이고 뒤집기", weeks:"2~3주", skill:"뒤집기, 끈",
+      learn:"겉끼리 마주 놓고 박기, 모서리 시접 잘라 송곳으로 밀어내기, 끈 만들기, 하중 걸리는 곳 보강박기.",
+      items:[
+        {t:"봉투형 쿠션커버", spec:"앞 42×42cm 1장 + 뒤 42×30cm 2장"},
+        {t:"쿠션커버 2개째"},
+        {t:"에코백"},
+        {t:"신발주머니"}
+      ],
+      tip:"쿠션커버는 실제 쿠션보다 1~2cm 작게 만들어야 모서리가 빵빵하게 찬다.",
+      pass:"뒤집었을 때 모서리가 둥글지 않고 뾰족하게 나올 것"
+    },
+    {
+      id:"s3", n:"3", name:"바인딩과 곡선", weeks:"2주", skill:"바인딩, 곡선",
+      learn:"바이어스 테이프 접어 다리기, 앞뒤 동시에 물려 박기, 곡선에서 바늘 꽂은 채 방향 전환.",
+      items:[
+        {t:"천테이프로 냅킨 테두리 바인딩", spec:"본체 40×40cm · 띠 180cm"},
+        {t:"티매트"},
+        {t:"냄비받침", spec:"곡선 연습"}
+      ],
+      tip:"띠 3cm는 양쪽을 7~8mm씩 접고 반으로 접으면 완성 폭 1.5cm. 박을 때 띠를 당기지 말 것 — 당기면 가장자리가 물결친다.",
+      pass:"한 바퀴 돌아 시작점과 만났을 때 뒷면 띠가 빠진 구간이 없을 것"
+    },
+    {
+      id:"s4", n:"4", name:"지퍼와 고무줄", weeks:"3주", skill:"지퍼, 고무줄",
+      learn:"지퍼 노루발 교체, 지퍼 옆 바짝 박기, 안전핀으로 통 뒤집고 고무줄 넣기, 허리 밴딩.",
+      items:[
+        {t:"지퍼 파우치"},
+        {t:"곱창밴드", spec:"원단 45×10cm · 고무줄 20cm"},
+        {t:"고무줄 치마"},
+        {t:"앞치마"},
+        {t:"고무줄 바지 또는 파자마"}
+      ],
+      pass:"지퍼가 걸리지 않고 끝까지 열릴 것"
+    },
+    {
+      id:"s5", n:"5", name:"안감과 입체", weeks:"2개월+", skill:"안감, 소매",
+      learn:"통돌이(안감 넣고 소매 구멍으로 뒤집기), 접착심지, 다트, 소매 달기, 단추구멍.",
+      items:[
+        {t:"크로스백 또는 버킷백"},
+        {t:"박스형 원피스"},
+        {t:"노카라 박스 자켓", spec:"55 사이즈 설계 있음"},
+        {t:"티셔츠", spec:"니트 원단 · 볼포인트 바늘"}
+      ],
+      tip:"자켓은 본 원단 자르기 전에 광목으로 가봉 한 벌을 먼저 만들 것. 어깨선과 진동 깊이는 가봉에서만 확인된다.",
+      pass:null
+    }
+  ];
+
+  var SUPPLIES = [
+    {t:"옥스포드 20수 3마", spec:"냅킨 4장 + 쿠션커버 2개 분량"},
+    {t:"폴리 재봉실 40수", spec:"검정, 흰색"},
+    {t:"바늘 11호"},
+    {t:"시침 클립, 실뜯개"},
+    {t:"로터리 커터 + 커팅매트 + 자"},
+    {t:"천테이프", spec:"폭 3cm · 3단계 바인딩용"}
+  ];
+
+  var state = {};        // {checkId: true} — 보는 사람의 브라우저에만 남는다
+  var LS = "sewing-progress-v1";
+
+  /* ---------- storage ---------- */
+  function loadLocal(){
+    try{
+      var raw = localStorage.getItem(LS);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object") state = o; }
+    }catch(e){}
+  }
+  function saveLocal(){
+    try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+  }
+  function setSync(live, text){
+    var el = document.getElementById("sync");
+    el.dataset.live = live ? "1" : "0";
+    el.lastElementChild.textContent = text;
+  }
+
+  /* ---------- helpers ---------- */
+  function el(tag, cls, text){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(text != null) n.textContent = text;
+    return n;
+  }
+  function checkRow(id, item){
+    var li = el("li","check");
+    var box = el("input");
+    box.type = "checkbox"; box.id = id; box.checked = !!state[id];
+    box.addEventListener("change", function(){
+      if(box.checked) state[id] = true; else delete state[id];
+      saveLocal(); refresh();
+    });
+    var lab = el("label"); lab.htmlFor = id;
+    lab.appendChild(el("span","t",item.t));
+    if(item.spec) lab.appendChild(el("span","spec",item.spec));
+    li.appendChild(box); li.appendChild(lab);
+    return li;
+  }
+  function pct(done, total){ return total ? Math.round(done/total*100) : 0; }
+
+  /* ---------- build ---------- */
+  var supplyList = document.getElementById("supply-list");
+  SUPPLIES.forEach(function(s,i){ supplyList.appendChild(checkRow("sup-"+i, s)); });
+
+  var stageList = document.getElementById("stage-list");
+  var railList = document.getElementById("rail-list");
+  var planRows = document.getElementById("plan-rows");
+
+  STAGES.forEach(function(st){
+    var card = el("article","stage");
+    card.id = st.id;
+
+    var head = el("div","stage-head");
+    head.appendChild(el("span","n mono", st.n));
+    head.appendChild(el("h3", null, st.name));
+    head.appendChild(el("span","wk", st.weeks));
+    card.appendChild(head);
+
+    if(st.lede) card.appendChild(el("p","lede", st.lede));
+
+    if(st.learn){
+      var lw = el("div","learn");
+      lw.appendChild(el("b",null,"새로 배우는 것"));
+      lw.appendChild(el("span",null,st.learn));
+      card.appendChild(lw);
+    }
+
+    var ul = el("ul","items");
+    st.items.forEach(function(it,i){ ul.appendChild(checkRow(st.id+"-"+i, it)); });
+    card.appendChild(ul);
+
+    if(st.tip) card.appendChild(el("p","tip", st.tip));
+
+    if(st.pass){
+      var ps = el("p","pass");
+      ps.appendChild(el("em",null,"통과 기준"));
+      ps.appendChild(el("span",null,st.pass));
+      card.appendChild(ps);
+    }
+
+    var bar = el("div","bar");
+    var seam = el("span","seam"); seam.setAttribute("aria-hidden","true");
+    var fill = el("i"); fill.style.width = "0%";
+    seam.appendChild(fill);
+    var val = el("span","v","0/"+st.items.length);
+    bar.appendChild(seam); bar.appendChild(val);
+    card.appendChild(bar);
+
+    stageList.appendChild(card);
+    st._card = card; st._fill = fill; st._val = val;
+
+    var li = document.createElement("li");
+    var a = document.createElement("a");
+    a.href = "#" + st.id;
+    a.appendChild(el("span","n", st.n));
+    a.appendChild(el("span",null, st.name));
+    a.appendChild(el("span","v","0%"));
+    li.appendChild(a); railList.appendChild(li);
+    st._link = a; st._linkVal = a.lastElementChild;
+
+    var tr = document.createElement("tr");
+    var td1 = el("td","n", st.n);
+    var td2 = el("td","d", st.weeks);
+    var td3 = el("td",null, st.skill);
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+    planRows.appendChild(tr);
+  });
+
+  /* ---------- derived state ---------- */
+  function refresh(){
+    var allDone = 0, allTotal = 0, current = null;
+
+    STAGES.forEach(function(st){
+      var done = 0;
+      st.items.forEach(function(_,i){ if(state[st.id+"-"+i]) done++; });
+      var total = st.items.length;
+      var p = pct(done,total);
+      allDone += done; allTotal += total;
+
+      st._fill.style.width = p + "%";
+      st._val.textContent = done + "/" + total;
+      st._linkVal.textContent = p + "%";
+
+      var complete = done === total;
+      st._card.dataset.done = complete ? "1" : "0";
+      st._link.dataset.done = complete ? "1" : "0";
+      if(!complete && !current) current = st;
+      st._card.dataset.now = "0";
+      st._link.dataset.now = "0";
+    });
+
+    var ap = pct(allDone, allTotal);
+    document.getElementById("bar-all").style.width = ap + "%";
+    document.getElementById("pct-all").textContent = ap + "%";
+
+    var nowTitle = document.getElementById("now-title");
+    var nowWeek = document.getElementById("now-week");
+    var nowNext = document.getElementById("now-next");
+
+    if(current){
+      current._card.dataset.now = "1";
+      current._link.dataset.now = "1";
+      nowTitle.textContent = current.n + "단계 · " + current.name;
+      nowWeek.textContent = current.weeks + " 예정";
+      var nextItem = null;
+      current.items.forEach(function(it,i){ if(!nextItem && !state[current.id+"-"+i]) nextItem = it; });
+      var txt = document.createDocumentFragment();
+      txt.appendChild(document.createTextNode("다음 한 가지: "));
+      var b = el("b", null, nextItem ? nextItem.t : "—");
+      txt.appendChild(b);
+      if(nextItem && nextItem.spec) txt.appendChild(document.createTextNode(" (" + nextItem.spec + ")"));
+      if(current.pass){
+        txt.appendChild(document.createElement("br"));
+        txt.appendChild(document.createTextNode("통과 기준 — " + current.pass));
+      }
+      nowNext.textContent = "";
+      nowNext.appendChild(txt);
+    }else{
+      nowTitle.textContent = "6단계 전부 통과";
+      nowWeek.textContent = "완주";
+      nowNext.textContent = "자켓까지 끝냈다. 다음은 패턴 제도.";
+    }
+  }
+
+  function syncBoxes(){
+    STAGES.forEach(function(st){
+      st.items.forEach(function(_,i){
+        var id = st.id+"-"+i, box = document.getElementById(id);
+        if(box) box.checked = !!state[id];
+      });
+    });
+    SUPPLIES.forEach(function(_,i){
+      var box = document.getElementById("sup-"+i);
+      if(box) box.checked = !!state["sup-"+i];
+    });
+  }
+
+  loadLocal();
+  syncBoxes();
+  refresh();
+
+  /* ---------- calculators ---------- */
+  function num(id){ var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+  function r(x){ return Math.round(x*10)/10; }
+
+  function calc(){
+    var a = num("c1a"), b = num("c1b");
+    var cut = r(a + b*4);
+    document.getElementById("c1out").innerHTML =
+      "재단 " + cut + " × " + cut + " cm<small>한 변에서 " + r(b*2) + "cm를 먹는다 — " +
+      r(b/2) + "cm 먼저 접고, " + b + "cm로 한 번 더.</small>";
+
+    var w = num("c2a"), h = num("c2b"), d = num("c2c");
+    document.getElementById("c2out").innerHTML =
+      "재단 " + r(w + d*2 + 5) + " × " + r(h + d*2 + 5) + " cm<small>늘어뜨림 " + d +
+      "cm 양쪽 + 시접 5cm 포함. 원단 폭이 모자라면 이어 붙여야 한다.</small>";
+
+    var cu = num("c3a"), less = num("c3b"), sa = num("c3c");
+    var fin = r(cu - less), front = r(fin + sa*2), back = r(front*0.72);
+    document.getElementById("c3out").innerHTML =
+      "앞면 " + front + " × " + front + " cm 1장<br>뒷면 " + front + " × " + back + " cm 2장" +
+      "<small>완성 " + fin + "cm. 뒷면 두 장이 " + r(back*2 - front) + "cm 겹쳐 봉투가 된다.</small>";
+
+    var bw = num("c4a"), bh = num("c4b"), tape = num("c4c");
+    var round = (bw + bh) * 2;
+    document.getElementById("c4out").innerHTML =
+      "띠 길이 " + r(round + 20) + " cm<small>둘레 " + r(round) + "cm + 모서리와 이음 여유 20cm. 폭 " +
+      tape + "cm 띠는 양쪽을 " + r(tape/4*10) + "mm씩 접어 완성 폭 " + r(tape/2) + "cm.</small>";
+  }
+  ["c1a","c1b","c2a","c2b","c2c","c3a","c3b","c3c","c4a","c4b","c4c"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", calc);
+  });
+  calc();
+
+  /* ---------- 저장 안내 ---------- */
+  var storable = false;
+  try{ localStorage.setItem(LS + "-t","1"); localStorage.removeItem(LS + "-t"); storable = true; }catch(e){}
+  setSync(storable,
+    storable ? "체크한 것은 이 브라우저에 남는다 — 사람마다 따로 기록된다"
+             : "이 브라우저는 저장을 막아 두었다 — 체크가 새로고침에 사라진다");
+})();
+</script>
+</body>
+</html>
