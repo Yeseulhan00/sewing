@@ -9,12 +9,32 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="손수건에서 자켓까지">
 <meta property="og:description" content="미싱 독학 6개월 커리큘럼 — 실 끼우기부터 안감 넣은 자켓까지, 단계별 체크리스트와 재단 치수 계산기.">
+<meta property="og:image" content="https://yeseulhan00.github.io/sewing/icon-512.png">
 <meta name="twitter:card" content="summary">
+
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="apple-mobile-web-app-title" content="미싱 독학">
+<meta name="application-name" content="미싱 독학">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F3F5F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131714" media="(prefers-color-scheme: dark)">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
 <style>
-  html{color-scheme:light dark}
+  /* 홈 화면에서 전체화면으로 열릴 때 상태표시줄·홈 인디케이터를 비켜간다 */
+  :root{
+    color-scheme:light dark;
+    background:#F3F5F0;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){ :root{background:#131714} }
   img{max-width:100%}
   [hidden]{display:none!important}
 </style>

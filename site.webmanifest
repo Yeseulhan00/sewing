@@ -1,0 +1,17 @@
+{
+  "name": "손수건에서 자켓까지",
+  "short_name": "미싱 독학",
+  "description": "미싱 독학 6개월 커리큘럼 — 단계별 체크리스트와 재단 치수 계산기.",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F3F5F0",
+  "theme_color": "#F3F5F0",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
