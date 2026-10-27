@@ -138,15 +138,28 @@
 
   /* ---- menu ---- */
   .menu-wrap{position:relative;flex:0 0 auto}
-  .menu-btn{
-    appearance:none;-webkit-appearance:none;display:grid;place-content:center;
+  .menu-btn,.share-btn{
+    appearance:none;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;
     background:none;border:1px solid var(--rule);border-radius:6px;
     color:var(--ink-2);padding:7px 8px;line-height:0;cursor:pointer;
     transition:background .15s ease,color .15s ease;
   }
-  .menu-btn:hover{background:var(--surface-2);color:var(--ink)}
+  .menu-btn:hover,.share-btn:hover{background:var(--surface-2);color:var(--ink)}
   .menu-btn[aria-expanded="true"]{background:var(--surface-2);color:var(--ink);border-color:var(--rule-2)}
-  @media (prefers-reduced-motion: reduce){ .menu-btn{transition:none} }
+  @media (prefers-reduced-motion: reduce){ .menu-btn,.share-btn{transition:none} }
+
+  .share-btn{flex:0 0 auto;gap:6px}
+  .share-txt{font-family:var(--f-body);font-size:.82rem;line-height:1}
+  @media (max-width:600px){ .share-txt{display:none} }
+
+  .toast{
+    position:fixed;left:50%;transform:translateX(-50%);z-index:50;
+    bottom:calc(env(safe-area-inset-bottom,0px) + 24px);
+    max-width:calc(100% - 32px);
+    background:var(--ink);color:var(--paper);
+    padding:10px 17px;border-radius:99px;box-shadow:var(--shadow-pop);
+    font-size:.85rem;line-height:1.4;text-align:center;word-break:break-all;
+  }
 
   .menu{
     position:absolute;top:calc(100% + 9px);left:0;z-index:30;min-width:13.5rem;
@@ -386,7 +399,17 @@
   .sync i{width:6px;height:6px;border-radius:99px;background:var(--rule-2);flex:0 0 auto}
   .sync[data-live="1"] i{background:var(--thread)}
 
-  footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--muted)}
+  footer{
+    margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
+    font-size:.8rem;color:var(--muted);
+    display:flex;flex-direction:column;gap:13px;
+  }
+  .addr{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .addr a{
+    font-family:var(--f-mono);font-size:.82rem;color:var(--thread);
+    text-decoration:none;word-break:break-all;
+  }
+  .addr a:hover{text-decoration:underline}
 </style>
 
 <div class="topbar">
@@ -411,8 +434,17 @@
     <span class="name">손수건에서 자켓까지</span>
     <span class="seam" aria-hidden="true"><i id="bar-all" style="width:0%"></i></span>
     <span class="pct mono" id="pct-all">0%</span>
+    <button class="share-btn" id="share-btn" type="button" aria-label="주소 공유하기">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 10.4V1.9M8 1.9 5.2 4.7M8 1.9l2.8 2.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3.2 8.4v4.3c0 .7.6 1.3 1.3 1.3h7c.7 0 1.3-.6 1.3-1.3V8.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="share-txt">공유</span>
+    </button>
   </div>
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <div class="wrap">
   <nav class="rail" aria-label="단계">
@@ -559,7 +591,11 @@
     <p class="sync" id="sync"><i></i><span>진행 상황을 불러오는 중…</span></p>
 
     <footer>
-      단계마다 같은 것을 두 개씩 만들어 보세요. 첫 개는 배우는 것이고, 두 번째가 실력이 됩니다.
+      <p>단계마다 같은 것을 두 개씩 만들어 보세요. 첫 개는 배우는 것이고, 두 번째가 실력이 됩니다.</p>
+      <p class="addr">
+        <span class="label">주소</span>
+        <a href="https://yeseulhan00.github.io/sewing/" id="addr-link">yeseulhan00.github.io/sewing</a>
+      </p>
     </footer>
   </main>
 </div>
@@ -871,6 +907,66 @@
       if(match) showTab(match, false);
     }
   }catch(e){}
+
+  /* ---------- 주소 공유 ---------- */
+  // 아티팩트는 iframe 안에서 열려 location이 내부 주소라, 공개 주소를 직접 적는다.
+  // 주소가 바뀌면 여기와 footer의 .addr 링크를 함께 고칠 것.
+  var SITE_URL = "https://yeseulhan00.github.io/sewing/";
+
+  var toastEl = document.getElementById("toast"), toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.hidden = true; }, 2600);
+  }
+
+  function copyByTextarea(text){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      toast(ok ? "주소를 복사했습니다" : text);
+    }catch(e){ toast(text); }
+  }
+
+  function copyUrl(){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(SITE_URL).then(
+        function(){ toast("주소를 복사했습니다"); },
+        function(){ copyByTextarea(SITE_URL); }
+      );
+    }else{
+      copyByTextarea(SITE_URL);
+    }
+  }
+
+  document.getElementById("share-btn").addEventListener("click", function(){
+    if(navigator.share){
+      navigator.share({
+        title: "손수건에서 자켓까지",
+        text: "미싱 독학 6개월 커리큘럼",
+        url: SITE_URL
+      }).catch(function(err){
+        if(err && err.name === "AbortError") return;   // 사용자가 공유를 닫은 경우
+        copyUrl();
+      });
+      return;
+    }
+    copyUrl();
+  });
+
+  document.getElementById("addr-link").addEventListener("click", function(ev){
+    ev.preventDefault();
+    copyUrl();
+  });
 
   /* ---------- 메뉴 ---------- */
   var menuBtn = document.getElementById("menu-btn");
